@@ -1472,6 +1472,131 @@ const isWalkable = (col, row, grid) => {
 };
 
 
+const visualizeThetaStar = async () => {
+  if (isRunning) return;
+  setIsRunning(true);
+
+  const newGrid = grid.map(row =>
+    row.map(node => ({
+      ...node,
+      isVisited: false,
+      isPath: false,
+      gScore: Infinity,
+      fScore: Infinity,
+      previousNode: null
+    }))
+  );
+
+  const startNodeObj = newGrid[startNode.row][startNode.col];
+  const endNodeObj = newGrid[endNode.row][endNode.col];
+  
+  startNodeObj.gScore = 0;
+  startNodeObj.fScore = euclideanDistance(startNodeObj, endNodeObj);
+
+  const openSet = [startNodeObj];
+  const closedSet = new Set();
+
+  while (openSet.length > 0) {
+    openSet.sort((a, b) => a.fScore - b.fScore);
+    const current = openSet.shift();
+
+    if (current === endNodeObj) {
+      const path = [];
+      let currentNode = current;
+      while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = currentNode.previousNode;
+      }
+      await animatePath(path);
+      setIsRunning(false);
+      return;
+    }
+
+    closedSet.add(`${current.row},${current.col}`);
+
+    if (current !== startNodeObj && current !== endNodeObj) {
+      await animateVisitedNode(current);
+    }
+
+    const neighbors = getNeighbors(current, newGrid);
+    
+    for (const neighbor of neighbors) {
+      if (closedSet.has(`${neighbor.row},${neighbor.col}`)) continue;
+
+      let gScore;
+      let parent = current;
+
+      // Line of sight check to potentially connect to grandparent
+      if (current.previousNode && hasLineOfSight(current.previousNode, neighbor, newGrid)) {
+        const tentativeGScore = current.previousNode.gScore + 
+                              euclideanDistance(current.previousNode, neighbor);
+        if (tentativeGScore < neighbor.gScore) {
+          gScore = tentativeGScore;
+          parent = current.previousNode;
+        }
+      }
+
+      // Fall back to standard path if no line of sight
+      if (!gScore) {
+        gScore = current.gScore + euclideanDistance(current, neighbor);
+      }
+
+      if (!openSet.includes(neighbor)) {
+        openSet.push(neighbor);
+      } else if (gScore >= neighbor.gScore) {
+        continue;
+      }
+
+      neighbor.previousNode = parent;
+      neighbor.gScore = gScore;
+      neighbor.fScore = gScore + euclideanDistance(neighbor, endNodeObj);
+    }
+  }
+
+  setIsRunning(false);
+};
+
+// Helper functions
+const euclideanDistance = (nodeA, nodeB) => {
+  return Math.sqrt(
+    Math.pow(nodeA.row - nodeB.row, 2) + 
+    Math.pow(nodeA.col - nodeB.col, 2)
+  );
+};
+
+const hasLineOfSight = (start, end, grid) => {
+  let x0 = start.col;
+  let y0 = start.row;
+  let x1 = end.col;
+  let y1 = end.row;
+  
+  const dx = Math.abs(x1 - x0);
+  const dy = Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1;
+  const sy = y0 < y1 ? 1 : -1;
+  let err = dx - dy;
+
+  while (true) {
+    if (x0 === x1 && y0 === y1) break;
+    if (grid[y0][x0].isWall) return false;
+
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y0 += sy;
+    }
+  }
+  
+  return true;
+};
+
+
+
+
 
 // Algorithm selection handler
 const visualizeAlgorithm = () => {
@@ -1590,7 +1715,7 @@ return (
                 <option value="dfs">Depth-First Search</option>
                 <option value="greedy">Greedy Best-First Search</option>
                 <option value="bidirectional">Bidirectional Search</option>
-                <option value="jps">Jump Point Search</option>
+                <option value="theta">Theta*</option>
               </select>
             </div>
 
@@ -1608,7 +1733,7 @@ return (
                     case 'sidewinder': generateSidewinderMaze(); break;
                     case 'random': generateRandomMaze(); break;
                     case 'prims': generatePrimsMaze(); break;
-                    case 'growingtree': generateGrowingTreeMaze(); break;
+                    case 'theta': visualizeThetaStar(); break;
                   }
                   e.target.value = '';
                 }}
