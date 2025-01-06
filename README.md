@@ -1,70 +1,87 @@
-# Getting Started with Create React App
+Pathfinding Visualizer
+An interactive visualization tool for pathfinding algorithms built with React. This project allows users to explore various pathfinding algorithms and maze generation techniques in a responsive, digital-themed interface.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You can view the tool here: https://pathfinding-visualizer-mu-sepia.vercel.app
 
-## Available Scripts
+Features
+Pathfinding Algorithms
 
-In the project directory, you can run:
+A Search* - Uses heuristics for optimal pathfinding
+Dijkstra's Algorithm - Guarantees shortest path
+Breadth-First Search - Explores nodes level by level
+Depth-First Search - Explores as far as possible along each branch
+Greedy Best-First Search - Uses heuristics without considering path cost
+Bidirectional Search - Searches from both start and end points
 
-### `npm start`
+Maze Generation Algorithms
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Recursive Backtracking - Creates complex, winding paths
+Kruskal's Algorithm - Generates a maze using a minimum spanning tree
+Hunt and Kill - Creates mazes with long corridors
+Sidewinder - Generates mazes with a notable horizontal bias
+Prim's Algorithm - Creates mazes using a minimum spanning tree approach
+Random Pattern - Generates random wall patterns
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Interactive Features
 
-### `npm test`
+Real-time visualization of algorithm execution
+Adjustable visualization speed
+Interactive grid with wall placement
+Draggable start and end points
+Undo/Redo functionality (Ctrl+Z, Ctrl+Y)
+Performance statistics (nodes visited, path length)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Technical Details
+Built With
 
-### `npm run build`
+React.js
+TailwindCSS
+Lucide React Icons
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Key Implementation Details
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Efficient grid state management using React hooks
+Custom animation system for visualization
+Modular architecture separating algorithms, utilities, and UI
+Responsive design with a digital theme
+Error handling for algorithm execution
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Getting Started
+Prerequisites
 
-### `npm run eject`
+Node.js (version 14 or higher)
+npm or yarn
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Clone the repository
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+bashCopygit clone https://github.com/yourusername/pathfinding-visualizer.git
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Install dependencies
 
-## Learn More
+bashCopycd pathfinding-visualizer
+npm install
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Start the development server
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+bashCopynpm start
+Usage
 
-### Code Splitting
+Select an Algorithm: Choose from the dropdown menu of available pathfinding algorithms
+Generate Maze (Optional): Select a maze generation pattern from the dropdown
+Customize Grid:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Click and drag to create walls
+Use the START and END tools to reposition nodes
+Use RESET to clear the grid
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Adjust Speed: Use the slider to control visualization speed
+Visualize: Click START to begin the visualization
 
-### Making a Progressive Web App
+Contributing
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+License
+This project is licensed under the MIT License - see the LICENSE.md file for details
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
