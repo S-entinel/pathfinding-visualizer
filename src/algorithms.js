@@ -1,21 +1,26 @@
 import { getNeighbors, manhattanDistance, getUnvisitedNeighbors, getVisitedNeighbors, clearAroundNode } from './utils';
 
 export const visualizeAlgorithm = async (algorithm, grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning) => {
-  switch(algorithm) {
-    case 'astar':
-      return visualizeAstar(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    case 'dijkstra':
-      return visualizeDijkstra(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    case 'bfs':
-      return visualizeBFS(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    case 'dfs':
-      return visualizeDFS(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    case 'greedy':
-      return visualizeGreedyBestFirst(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    case 'bidirectional':
-      return visualizeBidirectional(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
-    default:
-      return visualizeAstar(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+  setIsRunning(true);  // Set running state immediately
+  try {
+    switch(algorithm) {
+      case 'astar':
+        return await visualizeAstar(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      case 'dijkstra':
+        return await visualizeDijkstra(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      case 'bfs':
+        return await visualizeBFS(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      case 'dfs':
+        return await visualizeDFS(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      case 'greedy':
+        return await visualizeGreedyBestFirst(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      case 'bidirectional':
+        return await visualizeBidirectional(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+      default:
+        return await visualizeAstar(grid, startNode, endNode, animateVisitedNode, animatePath, setIsRunning);
+    }
+  } finally {
+    setIsRunning(false);  // Ensure running state is reset even if there's an error
   }
 };
 

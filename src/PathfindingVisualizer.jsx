@@ -20,12 +20,15 @@ const PathfindingVisualizer = () => {
   const [currentStep, setCurrentStep] = useState(-1);
   const [isWallOperation, setIsWallOperation] = useState(false);
   const [stats, setStats] = useState({
+
     nodesVisited: 0,
     pathLength: 0,
     executionTime: 0,
     isComputing: false,
     pathFound: false
   });
+  const [currentMazeType, setCurrentMazeType] = useState('');
+
 
   // Reset stats
   const resetStats = () => {
@@ -207,7 +210,15 @@ const PathfindingVisualizer = () => {
   // Maze generation
   const handleGenerateMaze = (type) => {
     if (isRunning) return;
-    generateMaze(type, grid, startNode, endNode, setGrid, setIsRunning);
+    
+    // First reset the grid to clear current maze/path
+    const newGrid = initializeGrid(gridSize);
+    setGrid(newGrid);
+    resetStats();
+    
+    // Set running state before generating new maze
+    setIsRunning(true);
+    generateMaze(type, newGrid, startNode, endNode, setGrid, setIsRunning);
   };
 
   useEffect(() => {
@@ -251,11 +262,11 @@ const PathfindingVisualizer = () => {
           <div>
             <label className="block font-mono text-sm text-white/50 mb-2">/SELECT_ALGORITHM</label>
             <select
-              className="digital-select w-full px-3 py-2"
-              value={currentAlgorithm}
-              onChange={(e) => setCurrentAlgorithm(e.target.value)}
-              disabled={isRunning}
-            >
+                className="digital-select w-full px-3 py-2"
+                value={currentAlgorithm}
+                onChange={(e) => setCurrentAlgorithm(e.target.value)}
+                disabled={isRunning}
+              >
               <option value="astar">A*_SEARCH</option>
               <option value="dijkstra">DIJKSTRA</option>
               <option value="bfs">BREADTH_FIRST</option>
@@ -266,26 +277,27 @@ const PathfindingVisualizer = () => {
           </div>
 
           <div>
-            <label className="block font-mono text-sm text-white/50 mb-2">/GENERATE_MAZE</label>
-            <select
-              className="digital-select w-full px-3 py-2"
-              onChange={(e) => {
-                const value = e.target.value;
-                if (!value) return;
-                handleGenerateMaze(value);
-                e.target.value = '';
-              }}
-              disabled={isRunning}
-            >
-              <option value="">SELECT_PATTERN</option>
-              <option value="recursive">RECURSIVE_BACKTRACKING</option>
-              <option value="kruskals">KRUSKALS</option>
-              <option value="huntandkill">HUNT_AND_KILL</option>
-              <option value="sidewinder">SIDEWINDER</option>
-              <option value="prims">PRIMS</option>
-              <option value="random">RANDOM</option>
-            </select>
-          </div>
+      <label className="block font-mono text-sm text-white/50 mb-2">/GENERATE_MAZE</label>
+      <select
+        className="digital-select w-full px-3 py-2"
+        value={currentMazeType}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (!value) return;
+          setCurrentMazeType(value);
+          handleGenerateMaze(value);
+        }}
+        disabled={isRunning}
+      >
+        <option value="">SELECT_PATTERN</option>
+        <option value="recursive">RECURSIVE_BACKTRACKING</option>
+        <option value="kruskals">KRUSKALS</option>
+        <option value="huntandkill">HUNT_AND_KILL</option>
+        <option value="sidewinder">SIDEWINDER</option>
+        <option value="prims">PRIMS</option>
+        <option value="random">RANDOM</option>
+      </select>
+        </div>
 
           <div className="flex items-end gap-3">
             <button
@@ -300,16 +312,16 @@ const PathfindingVisualizer = () => {
             </button>
 
             <div className="flex items-center gap-2 px-3 py-2 border border-white/20">
-              <input
-                type="range"
-                min="1"
-                max="100"
-                value={visualizationSpeed}
-                onChange={(e) => setVisualizationSpeed(Number(e.target.value))}
-                className="w-24 accent-white"
-                disabled={isRunning}
-              />
-            </div>
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value={visualizationSpeed}
+              onChange={(e) => setVisualizationSpeed(Number(e.target.value))}
+              className="w-24 accent-white"
+              disabled={isRunning}
+            />
+          </div>
           </div>
         </div>
 
@@ -388,18 +400,20 @@ const PathfindingVisualizer = () => {
             >
               {grid.map((row, rowIdx) =>
                 row.map((node, colIdx) => (
-                  <div
-                    key={`${rowIdx}-${colIdx}`}
-                    className={`
-                      digital-cell
-                      ${node.isWall ? 'wall' : ''}
-                      ${node.isVisited && !node.isPath ? 'node-visited' : ''}
-                      ${node.isPath ? 'node-path' : ''}
-                    `}
-                    onMouseDown={() => handleMouseDown(rowIdx, colIdx)}
-                    onMouseEnter={() => handleMouseEnter(rowIdx, colIdx)}
-                    onMouseUp={handleMouseUp}
-                  >
+                      <div
+                        key={`${rowIdx}-${colIdx}`}
+                        className={`
+                          digital-cell
+                          ${node.isWall ? 'wall' : ''}
+                          ${node.isVisited && !node.isPath ? 'node-visited' : ''}
+                          ${node.isPath ? 'node-path' : ''}
+                          ${isRunning ? 'pointer-events-none' : ''}
+                        `}
+                        onMouseDown={() => !isRunning && handleMouseDown(rowIdx, colIdx)}
+                        onMouseEnter={() => !isRunning && handleMouseEnter(rowIdx, colIdx)}
+                        onMouseUp={() => !isRunning && handleMouseUp()}
+                      >
+                                    
                     {startNode.row === rowIdx && startNode.col === colIdx && (
                       <div className="start-marker" />
                     )}
